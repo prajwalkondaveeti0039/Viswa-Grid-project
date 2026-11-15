@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Report an Issue | VISWA GRID</title>
+
+<!-- Leaflet Map Library -->
+<link rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+:root {
+    --green: #159653;
+    --dark-green: #087b40;
+    --bg: #f5f8f6;
+    --white: #ffffff;
+    --text: #17251e;
+    --muted: #718078;
+    --border: #e0e8e2;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* NAVIGATION */
+
+.navbar {
+    min-height: 75px;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 8%;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--dark-green);
+    letter-spacing: 1px;
+}
+
+.logo span {
+    color: #263a2e;
+}
+
+.nav-links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #34443a;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.nav-links a:hover {
+    color: var(--green);
+}
+
+/* HERO */
+
+.hero {
+    background: linear-gradient(120deg, #075c35, #159653);
+    color: white;
+    padding: 55px 8%;
+}
+
+.hero h1 {
+    font-size: 36px;
+    margin-bottom: 13px;
+}
+
+.hero p {
+    color: #e4f4e9;
+    font-size: 15px;
+    line-height: 1.7;
+    max-width: 650px;
+}
+
+/* MAIN FORM */
+
+.container {
+    max-width: 950px;
+    margin: 40px auto 65px;
+    padding: 0 20px;
+}
+
+.form-card {
+    background: white;
+    padding: 38px;
+    border-radius: 13px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+    border: 1px solid var(--border);
+}
+
+.intro {
+    margin-bottom: 30px;
+}
+
+.intro h2 {
+    font-size: 23px;
+    margin-bottom: 9px;
+}
+
+.intro p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.section {
+    margin-bottom: 35px;
+}
+
+.section-title {
+    font-size: 19px;
+    color: var(--dark-green);
+    margin-bottom: 23px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.field {
+    margin-bottom: 21px;
+}
+
+label.field-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 9px;
+}
+
+.required {
+    color: #dc4444;
+}
+
+input[type="text"],
+select,
+textarea {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #d8e2da;
+    border-radius: 7px;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    background: white;
+    color: #26352c;
+}
+
+input[type="text"]:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px rgba(21,150,83,0.10);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 125px;
+    line-height: 1.6;
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.helper {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+/* LOCATION MAP */
+
+#complaintMap {
+    width: 100%;
+    height: 380px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    margin-top: 15px;
+    z-index: 1;
+}
+
+.location-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.location-btn {
+    background: #e8f5ed;
+    color: #087b40;
+    border: 1px solid #c8e5d2;
+    padding: 11px 16px;
+}
+
+.location-btn:hover {
+    background: #d8eddf;
+}
+
+.location-info {
+    background: #f3f8f4;
+    border: 1px solid #dce9df;
+    padding: 13px;
+    border-radius: 8px;
+    margin-top: 13px;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.location-info strong {
+    color: #087b40;
+}
+
+.coordinate-text {
+    color: #526057;
+    font-size: 12px;
+}
+
+/* PHOTO UPLOAD */
+
+.upload-box {
+    display: block;
+    border: 2px dashed #b9d9c4;
+    background: #f7fbf8;
+    border-radius: 10px;
+    padding: 35px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.upload-box:hover {
+    border-color: var(--green);
+    background: #eff8f1;
+}
+
+.upload-icon {
+    font-size: 38px;
+    margin-bottom: 12px;
+}
+
+.upload-box strong {
+    display: block;
+    color: var(--dark-green);
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.upload-box p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+#photo {
+    display: block;
+    width: 100%;
+    margin-top: 12px;
+    font-size: 13px;
+    color: #526057;
+}
+
+#preview {
+    display: none;
+    max-width: 250px;
+    max-height: 200px;
+    margin: 18px auto 0;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+#removePhoto {
+    display: none;
+    margin: 10px auto 0;
+    padding: 8px 14px;
+    background: #fff0f0;
+    color: #b52c2c;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+/* BUTTONS */
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 13px;
+    padding-top: 23px;
+    border-top: 1px solid var(--border);
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 14px 25px;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cancel-btn {
+    background: #edf2ee;
+    color: #405047;
+}
+
+.cancel-btn:hover {
+    background: #dfe9e1;
+}
+
+.submit-btn {
+    background: var(--green);
+    color: white;
+}
+
+.submit-btn:hover {
+    background: var(--dark-green);
+}
+
+/* FOOTER */
+
+footer {
+    background: #102b1d;
+    color: #c5d5ca;
+    text-align: center;
+    padding: 28px 15px;
+    font-size: 13px;
+}
+
+footer strong {
+    color: white;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 650px) {
+    .navbar {
+        padding: 15px 5%;
+    }
+
+    .logo {
+        font-size: 19px;
+    }
+
+    .nav-links {
+        gap: 12px;
+    }
+
+    .nav-links a {
+        font-size: 12px;
+    }
+
+    .hero {
+        padding: 38px 6%;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .form-card {
+        padding: 23px 17px;
+    }
+
+    .row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+
+    #complaintMap {
+        height: 300px;
+    }
+
+    .location-actions button {
+        width: 100%;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVIGATION -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        VISWA <span>GRID</span>
+    </div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="index.html#services">Services</a>
+        <a href="index.html#about">About</a>
+    </div>
+
+</nav>
+
+<!-- HERO SECTION -->
+
+<header class="hero">
+
+    <h1>Report a Civic Issue</h1>
+
+    <p>
+        Your voice can make a difference. Report problems in your
+        neighbourhood and help us build a cleaner, safer and better city.
+        Every report brings us one step closer to a smarter community.
+    </p>
+
+</header>
+
+<!-- FORM -->
+
+<main class="container">
+
+<form class="form-card"
+      id="issueForm"
+      action="submit-complaint"
+      method="post"
+      enctype="multipart/form-data">
+
+    <div class="intro">
+        <h2>Submit Your Complaint</h2>
+        <p>
+            Please provide accurate information about the issue.
+            Fields marked with <span class="required">*</span> are mandatory.
+        </p>
+    </div>
+
+    <!-- SECTION 1: ISSUE DETAILS -->
+
+    <section class="section">
+
+        <h3 class="section-title">01. Issue Details</h3>
+
+        <div class="field">
+
+            <label class="field-label" for="citizenName">
+                Citizen Name <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="citizenName"
+                name="citizenName"
+                placeholder="Enter your full name"
+                maxlength="100"
+                required
+            >
+
+        </div>
+
+        <div class="field">
+
+            <label class="field-label" for="category">
+                Issue Category <span class="required">*</span>
+            </label>
+
+            <select id="category" name="category" required>
+
+                <option value="">Select issue category</option>
+                <option value="Roads and Potholes">Roads & Potholes</option>
+                <option value="Garbage and Sanitation">Garbage & Sanitation</option>
+                <option value="Streetlights">Streetlights</option>
+                <option value="Water Leakage">Water Leakage</option>
+                <option value="Public Spaces">Public Spaces</option>
+                <option value="Other Issues">Other Issues</option>
+
+            </select>
+
+        </div>
+
+        <div class="field">
+
+            <label class="field-label" for="title">
+                Issue Title <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="title"
+                name="issueTitle"
+                placeholder="Example: Large pothole near main road"
+                maxlength="100"
+                required
+            >
+
+        </div>
+
+        <div class="field">
+
+            <label class="field-label" for="description">
+                Issue Description <span class="required">*</span>
+            </label>
+
+            <textarea
+                id="description"
+                name="description"
+                placeholder="Describe the issue, its condition and how it affects the public..."
+                maxlength="1000"
+                required
+            ></textarea>
+
+            <p class="helper">
+                Maximum 1000 characters.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- SECTION 2: LOCATION DETAILS -->
+
+    <section class="section">
+
+        <h3 class="section-title">02. Location Details</h3>
+
+        <div class="field">
+
+            <label class="field-label" for="address">
+                Complete Address <span class="required">*</span>
+            </label>
+
+            <input
+                type="text"
+                id="address"
+                name="address"
+                placeholder="Street name, building or nearby landmark"
+                maxlength="250"
+                required
+            >
+
+        </div>
+
+        <div class="row">
+
+            <div class="field">
+
+                <label class="field-label" for="city">
+                    City <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="city"
+                    name="city"
+                    placeholder="Enter city"
+                    maxlength="100"
+                    required
+                >
+
+            </div>
+
+            <div class="field">
+
+                <label class="field-label" for="pincode">
+                    PIN Code <span class="required">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="pincode"
+                    name="pincode"
+                    placeholder="6-digit PIN code"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+        <!-- MAP LOCATION PICKER -->
+
+        <div class="field">
+
+            <label class="field-label">
+                Pinpoint the Issue Location
+                <span class="required">*</span>
+            </label>
+
+            <p class="helper">
+                Select the exact place where the civic issue exists.
+                Click on the map or use your device's current location.
+            </p>
+
+            <div class="location-actions">
+
+                <button type="button"
+                        class="location-btn"
+                        id="currentLocationBtn">
+                    Use My Current Location
+                </button>
+
+            </div>
+
+            <div id="complaintMap"></div>
+
+            <div class="location-info" id="locationInfo">
+                <strong>Location not selected.</strong>
+                <br>
+                Click on the map or use the current-location button.
+            </div>
+
+            <input type="hidden"
+                   id="latitude"
+                   name="latitude">
+
+            <input type="hidden"
+                   id="longitude"
+                   name="longitude">
+
+        </div>
+
+    </section>
+
+    <!-- SECTION 3: PHOTO UPLOAD -->
+
+    <section class="section">
+
+        <h3 class="section-title">03. Upload Evidence</h3>
+
+        <div class="field">
+
+            <label class="field-label" for="photo">
+                Issue Photograph
+            </label>
+
+            <label class="upload-box" for="photo">
+
+                <div class="upload-icon">📷</div>
+
+                <strong>Choose a photograph of the issue</strong>
+
+                <p>
+                    Click here to browse your device for an image.
+                </p>
+
+                <p>
+                    Supported formats: JPG, JPEG and PNG.
+                    Maximum size: 5 MB.
+                </p>
+
+            </label>
+
+            <input
+                type="file"
+                id="photo"
+                name="photo"
+                accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+            >
+
+            <img id="preview" alt="Selected issue photograph">
+
+            <button type="button" id="removePhoto">
+                Remove Photograph
+            </button>
+
+            <p class="helper">
+                Uploading a photograph helps the concerned department
+                understand and verify the issue.
+            </p>
+
+        </div>
+
+    </section>
+
+    <!-- ACTION BUTTONS -->
+
+    <div class="actions">
+
+        <button type="reset" class="cancel-btn">
+            Clear Form
+        </button>
+
+        <button type="submit" class="submit-btn">
+            Submit Complaint
+        </button>
+
+    </div>
+
+</form>
+
+</main>
+
+<!-- FOOTER -->
+
+<footer>
+
+    <p>
+        © 2026 <strong>VISWA GRID</strong> |
+        Smart Civic Issue Reporting and Resolution System
+    </p>
+
+    <p style="margin-top:8px;">
+        Building better communities through citizen participation.
+    </p>
+
+</footer>
+
+<!-- JAVASCRIPT -->
+
+<script>
+
+const photoInput = document.getElementById("photo");
+const preview = document.getElementById("preview");
+const removePhoto = document.getElementById("removePhoto");
+const form = document.getElementById("issueForm");
+
+let currentImageURL = null;
+
+/* PHOTO UPLOAD AND PREVIEW */
+
+photoInput.addEventListener("change", function() {
+
+    const file = this.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    const allowedTypes = [
+        "image/jpeg",
+        "image/png"
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+
+        alert("Invalid file format. Please select a JPG or PNG image.");
+
+        this.value = "";
+        return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+
+        alert("Photograph size must be less than 5 MB.");
+
+        this.value = "";
+        return;
+    }
+
+    if (currentImageURL) {
+        URL.revokeObjectURL(currentImageURL);
+    }
+
+    currentImageURL = URL.createObjectURL(file);
+
+    preview.src = currentImageURL;
+    preview.style.display = "block";
+
+    removePhoto.style.display = "block";
+
+});
+
+/* REMOVE PHOTO */
+
+removePhoto.addEventListener("click", function() {
+
+    photoInput.value = "";
+
+    preview.style.display = "none";
+    preview.removeAttribute("src");
+
+    removePhoto.style.display = "none";
+
+    if (currentImageURL) {
+        URL.revokeObjectURL(currentImageURL);
+        currentImageURL = null;
+    }
+
+});
+
+/* RESET FORM */
+
+form.addEventListener("reset", function() {
+
+    preview.style.display = "none";
+    preview.removeAttribute("src");
+
+    removePhoto.style.display = "none";
+
+    if (currentImageURL) {
+        URL.revokeObjectURL(currentImageURL);
+        currentImageURL = null;
+    }
+
+    latitudeInput.value = "";
+    longitudeInput.value = "";
+
+    if (locationMarker) {
+        map.removeLayer(locationMarker);
+        locationMarker = null;
+    }
+
+    locationInfo.innerHTML =
+        "<strong>Location not selected.</strong><br>" +
+        "Click on the map or use the current-location button.";
+
+    setTimeout(function() {
+        map.setView([20.5937, 78.9629], 5);
+    }, 0);
+
+});
+
+/* INTERACTIVE COMPLAINT LOCATION MAP */
+
+const map = L.map("complaintMap").setView(
+    [20.5937, 78.9629],
+    5
+);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom: 19
+}).addTo(map);
+
+let locationMarker = null;
+
+const latitudeInput = document.getElementById("latitude");
+const longitudeInput = document.getElementById("longitude");
+const locationInfo = document.getElementById("locationInfo");
+
+/* SELECT COMPLAINT LOCATION */
+
+function selectComplaintLocation(lat, lng) {
+
+    latitudeInput.value = lat.toFixed(7);
+    longitudeInput.value = lng.toFixed(7);
+
+    if (locationMarker) {
+        map.removeLayer(locationMarker);
+    }
+
+    locationMarker = L.marker([lat, lng]).addTo(map);
+
+    locationMarker.bindPopup(
+        "Selected Complaint Location"
+    ).openPopup();
+
+    locationInfo.innerHTML =
+        "<strong>Location selected successfully.</strong><br>" +
+        "Latitude: " + lat.toFixed(7) + "<br>" +
+        "Longitude: " + lng.toFixed(7);
+
+}
+
+/* SELECT LOCATION BY CLICKING MAP */
+
+map.on("click", function(event) {
+
+    selectComplaintLocation(
+        event.latlng.lat,
+        event.latlng.lng
+    );
+
+});
+
+/* USE DEVICE CURRENT LOCATION */
+
+document.getElementById("currentLocationBtn")
+    .addEventListener("click", function() {
+
+        if (!navigator.geolocation) {
+
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        locationInfo.innerHTML =
+            "Getting your current location. Please wait...";
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                map.setView([lat, lng], 17);
+
+                selectComplaintLocation(lat, lng);
+
+            },
+
+            function(error) {
+
+                let message =
+                    "Unable to retrieve your location.";
+
+                if (error.code === error.PERMISSION_DENIED) {
+
+                    message =
+                        "Location permission was denied. Select the location manually on the map.";
+
+                } else if (error.code === error.POSITION_UNAVAILABLE) {
+
+                    message =
+                        "Your current location is unavailable.";
+
+                } else if (error.code === error.TIMEOUT) {
+
+                    message =
+                        "Location request timed out. Please try again.";
+
+                }
+
+                locationInfo.innerHTML =
+                    "<strong>" + message + "</strong>";
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            }
+
+        );
+
+    });
+
+/* FINAL FORM VALIDATION */
+
+form.addEventListener("submit", function(event) {
+
+    if (!latitudeInput.value || !longitudeInput.value) {
+
+        event.preventDefault();
+
+        alert(
+            "Please select the exact complaint location on the map before submitting."
+        );
+
+        document.getElementById("complaintMap")
+            .scrollIntoView({ behavior: "smooth" });
+
+        return;
+    }
+
+    const file = photoInput.files[0];
+
+    if (file) {
+
+        const allowedTypes = [
+            "image/jpeg",
+            "image/png"
+        ];
+
+        if (!allowedTypes.includes(file.type) ||
+            file.size > 5 * 1024 * 1024) {
+
+            event.preventDefault();
+
+            alert(
+                "Please select a JPG or PNG photograph smaller than 5 MB."
+            );
+
+        }
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
