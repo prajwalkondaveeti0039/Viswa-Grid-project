@@ -1,6 +1,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.viswagrid.model.Complaint" %>
 <%@ page import="com.viswagrid.model.Admin" %>
+<%@ page import="com.viswagrid.model.Department" %>
 
 <%!
     private String escapeHtml(String value) {
@@ -20,7 +21,9 @@
                     .replace("\"", "\\\"")
                     .replace("'", "\\'")
                     .replace("\r", "\\r")
-                    .replace("\n", "\\n")
+                    .replace("
+", "\
+")
                     .replace("\t", "\\t")
                     .replace("<", "\\u003C")
                     .replace(">", "\\u003E")
@@ -42,6 +45,9 @@
     if (complaints == null) {
         complaints = new java.util.ArrayList<Complaint>();
     }
+
+    List<Department> departments = (List<Department>) request.getAttribute("departments");
+    if (departments == null) departments = new java.util.ArrayList<Department>();
 
     int total = complaints.size();
     int submitted = 0;
@@ -609,6 +615,16 @@ tbody tr:hover {
     </a>
 
     <a class="nav-link"
+       href="<%= request.getContextPath() %>/admin-departments">
+       Manage Departments
+    </a>
+
+    <a class="nav-link"
+       href="<%= request.getContextPath() %>/admin-officers">
+       Manage Department Officers
+    </a>
+
+    <a class="nav-link"
        href="<%= request.getContextPath() %>/index.html">
        View Website
     </a>
@@ -662,6 +678,14 @@ tbody tr:hover {
             Complaint status updated successfully.
         </div>
 
+    <% } %>
+
+    <% if ("1".equals(request.getParameter("assigned"))) { %>
+        <div class="alert alert-success">Complaint assigned to department successfully.</div>
+    <% } %>
+
+    <% if ("1".equals(request.getParameter("assigned"))) { %>
+        <div class="alert alert-success">Complaint assigned to department successfully.</div>
     <% } %>
 
     <!-- STATISTICS -->
@@ -805,6 +829,7 @@ tbody tr:hover {
                         <th>Category</th>
                         <th>Issue</th>
                         <th>City</th>
+                        <th>Department</th>
                         <th>Status</th>
                         <th>Details</th>
                         <th>Update Status</th>
@@ -817,7 +842,7 @@ tbody tr:hover {
                 <% if (complaints.isEmpty()) { %>
 
                     <tr>
-                        <td colspan="8" class="empty">
+                        <td colspan="9" class="empty">
                             No complaints have been submitted yet.
                         </td>
                     </tr>
@@ -854,6 +879,27 @@ tbody tr:hover {
 
                         <td>
                             <%= escapeHtml(c.getCity()) %>
+                        </td>
+
+                        <td>
+                            <form class="update-form"
+                                  action="<%= request.getContextPath() %>/assign-complaint-department"
+                                  method="post">
+                                <input type="hidden" name="complaintId" value="<%= c.getComplaintId() %>">
+                                <select name="departmentId" required>
+                                    <option value="">Select department</option>
+                                    <% for (Department department : departments) { %>
+                                        <option value="<%= department.getDepartmentId() %>"
+                                            <%= c.getDepartmentId() != null && c.getDepartmentId().intValue() == department.getDepartmentId() ? "selected" : "" %>>
+                                            <%= escapeHtml(department.getDepartmentName()) %>
+                                        </option>
+                                    <% } %>
+                                </select>
+                                <button type="submit" class="update-button">Assign</button>
+                            </form>
+                            <% if (c.getDepartmentName() != null) { %>
+                                <small>Current: <%= escapeHtml(c.getDepartmentName()) %></small>
+                            <% } %>
                         </td>
 
                         <td>

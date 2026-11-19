@@ -1,0 +1,20 @@
+VISWA GRID - SEPARATE DEPARTMENT OFFICER LOGIN
+
+New role flow:
+1. Admin signs in using the existing Admin Portal.
+2. Admin opens Manage Department Officers from the admin sidebar.
+3. Admin creates an officer account and selects an active department.
+4. Officer signs in through Department Officer Login on the home page.
+5. Officer sees only complaints assigned to that officer's department.
+6. Officer can update only those complaints to IN_PROGRESS, RESOLVED, or REJECTED.
+
+DATABASE:
+Run database/department_officer_login_migration.sql once, after running
+ database/department_management_migration.sql from the previous department feature.
+
+IMPORTANT:
+- Department officer accounts are created by the administrator. There is no public officer registration.
+- Passwords are stored as BCrypt hashes.
+- Officer status updates are scoped by BOTH complaint_id and department_id in SQL.
+- Officers cannot access the admin dashboard or another department's complaint records.
+- Test on your local MySQL database and Tomcat 10.1 before deployment.

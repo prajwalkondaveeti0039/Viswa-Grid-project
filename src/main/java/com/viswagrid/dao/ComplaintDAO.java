@@ -74,7 +74,7 @@ public class ComplaintDAO {
     public Complaint getComplaintById(long complaintId)
             throws SQLException {
 
-        String sql = "SELECT * FROM complaints WHERE complaint_id = ?";
+        String sql = "SELECT c.*, d.department_name FROM complaints c LEFT JOIN departments d ON c.department_id = d.department_id WHERE c.complaint_id = ?";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement =
@@ -97,7 +97,7 @@ public class ComplaintDAO {
 
         List<Complaint> complaints = new ArrayList<>();
 
-        String sql = "SELECT * FROM complaints ORDER BY created_at DESC";
+        String sql = "SELECT c.*, d.department_name FROM complaints c LEFT JOIN departments d ON c.department_id = d.department_id ORDER BY c.created_at DESC";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement =
@@ -118,9 +118,9 @@ public class ComplaintDAO {
 
         List<Complaint> complaints = new ArrayList<>();
 
-        String sql = "SELECT * FROM complaints "
-                   + "WHERE citizen_id = ? "
-                   + "ORDER BY created_at DESC";
+        String sql = "SELECT c.*, d.department_name FROM complaints c "
+                   + "LEFT JOIN departments d ON c.department_id = d.department_id "
+                   + "WHERE c.citizen_id = ? ORDER BY c.created_at DESC";
 
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement =
@@ -166,7 +166,24 @@ public class ComplaintDAO {
         }
     }
 
-    // 6. Convert database record into Complaint object
+
+    // Assign a complaint to an active department.
+    public boolean assignComplaintToDepartment(long complaintId, int departmentId)
+            throws SQLException {
+        String sql = "UPDATE complaints c JOIN departments d "
+                   + "ON d.department_id = ? AND d.is_active = TRUE "
+                   + "SET c.department_id = ?, c.status = 'ASSIGNED' "
+                   + "WHERE c.complaint_id = ?";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, departmentId);
+            statement.setInt(2, departmentId);
+            statement.setLong(3, complaintId);
+            return statement.executeUpdate() > 0;
+        }
+    }
+
+    // 7. Convert database record into Complaint object
     private Complaint mapComplaint(ResultSet result)
             throws SQLException {
 
@@ -201,6 +218,10 @@ public class ComplaintDAO {
 
         complaint.setStatus(
                 result.getString("status"));
+
+        int departmentId = result.getInt("department_id");
+        complaint.setDepartmentId(result.wasNull() ? null : departmentId);
+        complaint.setDepartmentName(result.getString("department_name"));
 
         double latitude = result.getDouble("latitude");
         complaint.setLatitude(

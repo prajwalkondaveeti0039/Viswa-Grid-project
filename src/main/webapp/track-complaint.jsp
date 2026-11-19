@@ -247,6 +247,13 @@
             </div>
         </div>
 
+        <% if (complaint.getDepartmentName() != null) { %>
+        <div class="detail">
+            <div class="detail-label">Assigned Department</div>
+            <div class="detail-value"><%= complaint.getDepartmentName() %></div>
+        </div>
+        <% } %>
+
         <div class="detail">
             <div class="detail-label">Current Status</div>
             <div class="detail-value">

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import com.viswagrid.dao.ComplaintDAO;
+import com.viswagrid.dao.DepartmentDAO;
 import com.viswagrid.model.Complaint;
 
 @WebServlet("/admin-dashboard")
@@ -20,6 +21,7 @@ public class AdminDashboardServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     private final ComplaintDAO complaintDAO = new ComplaintDAO();
+    private final DepartmentDAO departmentDAO = new DepartmentDAO();
 
     @Override
     protected void doGet(HttpServletRequest request,
@@ -39,6 +41,7 @@ public class AdminDashboardServlet extends HttpServlet {
                     complaintDAO.getAllComplaints();
 
             request.setAttribute("complaints", complaints);
+            request.setAttribute("departments", departmentDAO.getActiveDepartments());
 
             request.getRequestDispatcher("/admin-dashboard.jsp")
                     .forward(request, response);

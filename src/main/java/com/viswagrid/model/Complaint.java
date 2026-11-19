@@ -13,6 +13,8 @@ public class Complaint {
     private String pincode;
     private String photoPath;
     private String status;
+    private Integer departmentId;
+    private String departmentName;
 
     // New location fields
     private Double latitude;
@@ -123,6 +125,11 @@ public class Complaint {
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
     }
+
+    public Integer getDepartmentId() { return departmentId; }
+    public void setDepartmentId(Integer departmentId) { this.departmentId = departmentId; }
+    public String getDepartmentName() { return departmentName; }
+    public void setDepartmentName(String departmentName) { this.departmentName = departmentName; }
 
     public String getStatus() {
         return status;

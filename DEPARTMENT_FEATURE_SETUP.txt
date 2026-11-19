@@ -1,0 +1,31 @@
+VISWA GRID - DEPARTMENT MANAGEMENT FEATURE
+
+WHAT WAS ADDED
+1. Department Management page for administrators.
+2. Add departments and edit their name/description.
+3. Activate/deactivate departments. Inactive departments cannot receive new assignments.
+4. Assign each complaint to an active department from the Admin Dashboard.
+5. Assignment automatically changes complaint status to ASSIGNED.
+6. Department name is displayed with the complaint through the database relationship.
+
+DATABASE SETUP (REQUIRED)
+1. Open MySQL Workbench or your MySQL client.
+2. Select the existing viswa_grid database.
+3. Open and run: database/department_management_migration.sql
+4. IMPORTANT: This migration is intended for the existing database. If the complaints.department_id column already exists, remove/skip the ALTER TABLE block before running.
+5. The script creates six initial departments.
+
+RUNNING
+1. Import the updated project into Eclipse as an existing Maven project.
+2. Right-click project > Maven > Update Project.
+3. Confirm VISWA_DB_USER and VISWA_DB_PASSWORD are configured in the Tomcat server environment, as required by the existing DBConnection.java.
+4. Run on Tomcat 10.1.
+5. Sign in as administrator.
+6. Open Admin Dashboard > Manage Departments.
+7. Add/edit departments, then return to Manage Complaints and use Department Assignment for each complaint.
+
+NOTES
+- Existing complaints remain unassigned until an administrator assigns them.
+- Department assignment is currently administrator-controlled.
+- This update does not yet add separate officer accounts or officer-specific dashboards.
+- Existing complaint status management and citizen functionality are retained.
