@@ -1,7 +1,7 @@
 # VISWA GRID
 ### Smart Civic Issue Reporting and Resolution System
 
-VISWA GRID is a Java-based web application for reporting and mREADME.mdanaging civic issues such as potholes, damaged roads, garbage accumulation, non-functional streetlights and water leakage. It provides separate access for citizens, administrators and department officers so that complaints can be submitted, reviewed, assigned and tracked through a common platform.
+VISWA GRID is a Java-based web application for reporting and managing civic issues such as potholes, damaged roads, garbage accumulation, non-functional streetlights and water leakage. It provides separate access for citizens, administrators and department officers so that complaints can be submitted, reviewed, assigned and tracked through a common platform.
 
 The project is developed as an academic web application using Java, Jakarta Servlets, JSP, JDBC and MySQL.
 
